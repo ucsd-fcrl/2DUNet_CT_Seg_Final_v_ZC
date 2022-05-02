@@ -1,7 +1,7 @@
 # U-Net-2D
 
 ## Description:
-This repo enables the deep learning (DL) segmentation of CT volumes in a 2D slice-by-slice fashion.
+This repo enables the deep learning (DL) heart chamber segmentation of CT volumes in a 2D slice-by-slice fashion.
 
 It includes scripts to pre-process the image for DL training, DL model training and DL model prediction.
 
