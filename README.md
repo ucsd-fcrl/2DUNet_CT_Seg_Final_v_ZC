@@ -14,15 +14,15 @@ pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg
 ## Data Preparation:
 To train the model, make sure you have prepared your images and manual/ground truth segmentation. Here is a list of things you need to do for data preparation.
 1. ```tool_resample_by_c3d.sh```: resample the CT volumes/manual segmentations to a uniform pixel dimension (required for U-Net input). default = 0.625mm^3
-2. ```pre_step1_set_defaults.sh```: define the parameters&folders for DL experiments.
-3. ```pre_step2_adapt_image.py```: pre-process the image for model *training*
-4. ```pre_step3_partition.py```: randomly split the patient list to do *n-fold cross-validation*.
+2. ```pre_step1_adapt_image.py```: pre-process the image for model *training*
+3. ```pre_step2_partition.py```: randomly split the patient list to do *n-fold cross-validation*.
 
 ## Main Script:
+- ```set_defaults.sh```: define the parameters&folders for DL experiments.
 - ```main_train.py```: to train the model, using n-1 subsamples for training and the rest 1 subsample for validation.
 - ```main_validate.py```: to validate the model for n-fold cross-validation
 - ```main_predict.py```: to predict segmentation on new cases by trained DL model
-    - in folder post_processing: post_process the predicted segmentation (optional), mainly to exclude the disconnected parts. first run tool_exclude_disconnectivity.m, and then run tool_mat_to_nii.ipynb to turn mat file to nii file.
+    - in folder ```post_processing```: post_process the predicted segmentation (optional), mainly to exclude the disconnected parts. first run ```tool_exclude_disconnectivity.m```, and then run ```tool_mat_to_nii.ipynb``` to turn mat file to nii file.
 
 ## Additional Guidelines
 see comments in the script
