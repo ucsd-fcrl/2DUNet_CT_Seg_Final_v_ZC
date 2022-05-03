@@ -13,6 +13,31 @@ import segcnn
 
 cg = segcnn.Experiment()
 
+patient_list_raw = ff.find_all_target_files(['*/*'],cg.local_dir)  
+patient_list = []
+for p in patient_list_raw:
+    if len(ff.find_all_target_files(['*.npy'],os.path.join(p,'img-nii-0.625-adapted'))) > 0:
+        patient_list.append(p)
+patient_list = np.asarray(patient_list)
+
+for p in patient_list:
+    patient_class = os.path.basename(os.path.dirname(p))
+    patient_id = os.path.basename(p)
+    # img_files = ff.find_all_target_files(['*.npy'],os.path.join(p,'img-nii-0.625-adapted'))
+    # for i in img_files:
+    #     a = np.load(i,allow_pickle = True)
+    #     if (a.shape[0] != 352) or (a.shape[1] != 352) or (a.shape[2] != 256):
+    #         print(patient_class,patient_id,a.shape)
+    
+    seg_files = ff.find_all_target_files(['*.npy'],os.path.join(p,'seg-pred-0.625-4classes-connected-retouch-adapted'))
+    for s in seg_files:
+        a = np.load(s,allow_pickle = True)
+        if (a.shape[0] != 352) or (a.shape[1] != 352) or (a.shape[2] != 256) or (a.shape[3] !=4):
+            print(patient_class,patient_id,s, a.shape)
+        
+
+    
+
 # #delete
 # folders = ff.find_all_target_files(['*/*/img-nii-1.5'],cg.local_dir)
 # print(folders.shape)
@@ -21,68 +46,34 @@ cg = segcnn.Experiment()
 # folders = ff.find_all_target_files(['*/*/img-nii-1.5'],cg.local_dir)
 # print(folders.shape)
 
-# file transfer intra-NAS
-# save_folder = os.path.join('/Data/McVeighLabSuper/wip/zhennong/2020_after_Junes','downsample-nii-images-1.5mm')
-# patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
-# for p in patient:
-#     patient_class = os.path.basename(os.path.dirname(p))
+
+#  file transfer to octomore
+# print(cg.local_dir)
+# patient_list = ff.find_all_target_files(['Abnormal/CVC1907301359'],cg.image_data_dir)
+# for p in patient_list:
 #     patient_id = os.path.basename(p)
-    
-
-#     image_files = ff.find_all_target_files(['0.nii.gz'],os.path.join(p,'img-nii-1.5'))
-#     for img in image_files:
-#         destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-1.5',os.path.basename(img))
-        
-#         ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
-#         if os.path.isfile(destination) == 0:
-#             print(patient_class,patient_id)
-#             shutil.copy(img,destination)
-
-# file transfer into octomore
-# save_folder = cg.local_dir
-# patient = ff.find_all_target_files(['Abnormal/*','Normal/*'],cg.image_data_dir)
-# for p in patient:
 #     patient_class = os.path.basename(os.path.dirname(p))
-#     patient_id = os.path.basename(p)
-    
-
-#     image_files = ff.find_all_target_files(['*.nii.gz'],os.path.join(p,'img-nii-0.625'))
-#     for img in image_files:
-#         destination = os.path.join(save_folder,patient_class,patient_id,'img-nii-0.625',os.path.basename(img))
-        
-#         ff.make_folder([os.path.dirname(os.path.dirname(destination)),os.path.dirname(destination)])
-#         if os.path.isfile(destination) == 0:
-#             print(patient_class,patient_id)
-#             shutil.copy(img,destination)
-
-
-# file transfer to octomore
-print(cg.local_dir)
-patient_list = ff.find_all_target_files(['*/*'],cg.image_data_dir)
-for p in patient_list:
-    patient_id = os.path.basename(p)
-    patient_class = os.path.basename(os.path.dirname(p))
-    print(patient_class,patient_id)
+#     print(patient_class,patient_id)
      
-    ff.make_folder([os.path.join(cg.local_dir,patient_class),os.path.join(cg.local_dir,patient_class,patient_id)])
+#     ff.make_folder([os.path.join(cg.local_dir,patient_class),os.path.join(cg.local_dir,patient_class,patient_id)])
     
-    img_list = ff.find_all_target_files(['*.npy'],os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625-adapted'))
-    for i in img_list:
-        img_save_folder = os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625-adapted')
-        ff.make_folder([img_save_folder])
-        if os.path.isfile(os.path.join(img_save_folder,os.path.basename(i))) == 0:
-            shutil.copyfile(i,os.path.join(img_save_folder,os.path.basename(i)))
+#     img_list = ff.find_all_target_files(['*.npy'],os.path.join(cg.image_data_dir,patient_class,patient_id,'img-nii-0.625-adapted'))
+#     for i in img_list:
+#         img_save_folder = os.path.join(cg.local_dir,patient_class,patient_id,'img-nii-0.625-adapted')
+#         ff.make_folder([img_save_folder])
+#         if os.path.isfile(os.path.join(img_save_folder,os.path.basename(i))) == 0:
+#             shutil.copyfile(i,os.path.join(img_save_folder,os.path.basename(i)))
    
-    seg_list = ff.find_all_target_files(['*.npy'],os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes-connected-retouch-adapted'))
-    for s in seg_list:
-        seg_save_folder = os.path.join(cg.local_dir,patient_class,patient_id,'seg-pred-0.625-4classes-connected-retouch-adapted')
-        ff.make_folder([seg_save_folder])
-        if os.path.isfile(os.path.join(seg_save_folder,os.path.basename(s))) == 0:
-            shutil.copyfile(s,os.path.join(seg_save_folder, os.path.basename(s)))
+#     seg_list = ff.find_all_target_files(['*.npy'],os.path.join(cg.seg_data_dir,patient_class,patient_id,'seg-pred-0.625-4classes-connected-retouch-adapted'))
+#     for s in seg_list:
+#         seg_save_folder = os.path.join(cg.local_dir,patient_class,patient_id,'seg-pred-0.625-4classes-connected-retouch-adapted')
+#         ff.make_folder([seg_save_folder])
+#         if os.path.isfile(os.path.join(seg_save_folder,os.path.basename(s))) == 0:
+#             shutil.copyfile(s,os.path.join(seg_save_folder, os.path.basename(s)))
 
-    txt_file = ff.find_all_target_files(['ED_ES_frame_based_on_segmentation.txt'],os.path.join(cg.seg_data_dir,patient_class,patient_id))
-    if len(txt_file) > 0:
-        shutil.copyfile(txt_file[0],os.path.join(cg.local_dir,patient_class,patient_id,os.path.basename(txt_file[0])))
+#     txt_file = ff.find_all_target_files(['ED_ES_frame_based_on_segmentation.txt'],os.path.join(cg.seg_data_dir,patient_class,patient_id))
+#     if len(txt_file) > 0:
+#         shutil.copyfile(txt_file[0],os.path.join(cg.local_dir,patient_class,patient_id,os.path.basename(txt_file[0])))
     
     
 
