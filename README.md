@@ -1,4 +1,5 @@
 # U-Net-2D
+**Author: Zhennong Chen, PhD**
 
 ## Description:
 This repo enables the deep learning (DL) heart chamber segmentation of CT volumes in a 2D slice-by-slice fashion.
