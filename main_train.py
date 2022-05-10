@@ -42,27 +42,38 @@ import segcnn
 cg = segcnn.Experiment()
 
 K.set_image_dim_ordering('tf')  # Tensorflow dimension ordering in this code
-
 # Allow Dynamic memory allocation.
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 session = tf.Session(config=config)
 
+
+
+###### Define a name of your trial
+trial_name = 'final' 
+
+###### define partition file folder
+partition_file_folder = 'final'
+
+###### define hdf5 file save folder (hdf5 file is the model weights file)
+print(cg.model_save_dir)
+weight_file_save_folder = os.path.join(cg.model_save_dir,'models_'+trial_name)
+ff.make_folder([weight_file_save_folder,os.path.join(cg.model_save_dir,'logs')])
+
+###### define initialization method (either random or load the previously trained model)
+load_model = True
+if load_model == True:
+  # please define your own file path
+  model_file = os.path.join(cg.model_save_dir,'models_final/model_batch0/model-pre-batch0-seg-029'+'.hdf5')
+
+
+
+
+# Main script: (usually no need to change)
 def train(batch):
     print(cg.dim)
     print('BATCH_SIZE = ',cg.batch_size)
     
-    # define a name of your trial
-    trial_name = 'final' 
-
-    # define partition file
-    partition_file_folder = 'final'
-
-    # define hdf5 file save folder (hdf5 file is the model weights file)
-    print(cg.model_save_dir)
-    weight_file_save_folder = os.path.join(cg.model_save_dir,'models_'+trial_name)
-    ff.make_folder([weight_file_save_folder,os.path.join(cg.model_save_dir,'logs')])
-
     #===========================================
     dv.section_print('Calculating Image Lists...')
     
@@ -94,15 +105,17 @@ def train(batch):
                                     unet_depth = cg.unet_depth,
                                    )(model_inputs[0])
     model_outputs += [unet_output]
-
-
     model = Model(inputs = model_inputs,outputs = model_outputs)
+
+    if load_model == True:
+      model.load_weights(model_file)
+
     opt = Adam(lr = 1e-4) 
     losses={'unet':'categorical_crossentropy'} 
     model.compile(optimizer= opt, 
                  loss= losses,
                  metrics= {'unet':'acc',})
-    
+
     #======================
     dv.section_print('Fitting model...')
    
@@ -113,8 +126,7 @@ def train(batch):
     else:
       model_name = 'model-'+trial_name+'-batch'+str(batch)+'-seg'
       model_fld = 'model_batch'+str(batch)
-    filename = model_name +'-{epoch:03d}.hdf5'
-    filepath=os.path.join(weight_file_save_folder,model_fld,filename)   
+    filepath=os.path.join(weight_file_save_folder, model_fld, model_name +'-{epoch:03d}.hdf5')   
     ff.make_folder([os.path.dirname(filepath)])
  
     # set callbacks
