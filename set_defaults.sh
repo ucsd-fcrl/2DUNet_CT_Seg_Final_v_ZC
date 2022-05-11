@@ -37,7 +37,8 @@ export CG_RELABEL_LVOT=1 # in the manual ground truth segmentation, LVOT = class
 
 # set U-NET feature depth
 export CG_CONV_DEPTH_MULTIPLIER=1 # default = 1 
-export CG_FEATURE_DEPTH=8 # 8 is up to 2^8 = 256, 9 is up to 512 and 10 is up to 1024, larger number means deeper U-net, slower training and larger GPU capacity required
+export CG_FEATURE_DEPTH=8 
+# depth=8 is up to 2^8 = 256, 9 is up to 512 and 10 is up to 1024 (1024 is reported to use in many papers), larger number means deeper U-net, slower training and larger GPU capacity required
 
 # set learning epochs
 export CG_EPOCHS=100
