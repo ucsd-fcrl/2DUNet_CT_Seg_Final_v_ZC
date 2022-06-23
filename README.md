@@ -16,9 +16,10 @@ pip uninstall dvpy; pip install git+https://github.com/zhennongchen/dvpy.git#egg
 
 ## Data Preparation:
 To train the model, make sure you have prepared your images and manual/ground truth segmentation. Here is a list of things you need to do for data preparation.
-1. ```tool_resample_by_c3d.sh```: resample the CT volumes/manual segmentations to a uniform pixel dimension (required for U-Net input). default = 0.625mm^3
-2. ```pre_adapt_image.py```: pre-process the image for model *training*
-3. ```pre_partition.py```: randomly split the patient list if to do *n-fold cross-validation*.
+1. ```set_defaults.sh```: define the parameters&file pathes for DL experiments.
+2. ```tool_resample_by_c3d.sh```: resample the CT volumes/manual segmentations to a uniform pixel dimension (required for U-Net input). default = 0.625mm^3
+3. ```pre_adapt_image.py```: pre-process the image for model *training*
+4. ```pre_partition.py```: randomly split the patient list if to do *n-fold cross-validation*.
 
 ## Main Script:
 - ```set_defaults.sh```: define the parameters&folders for DL experiments.
